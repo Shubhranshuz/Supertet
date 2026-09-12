@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1180">
+<title>सुपरटेट सिलेबस प्रोग्रेस ट्रैकर</title>
+<meta name="description" content="उ.प्र. सहायक अध्यापक (कक्षा 1-5) भर्ती परीक्षा 2026 — SUPERTET सिलेबस प्रोग्रेस ट्रैकर">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#26283a;
+    --muted:#6c6f85;
+    --muted-soft:#9598ab;
+    --card-bg:rgba(255,255,255,.78);
+    --card-border:rgba(255,255,255,.9);
+    --shadow-soft:0 8px 26px rgba(50,45,90,.08);
+    --radius-lg:24px;
+    --radius-md:18px;
+    --radius-sm:12px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    min-height:100vh;
+    color:var(--ink);
+    font-family:'Poppins','Noto Sans Devanagari',sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    background:#f4f3f8;
+  }
+
+  /* ---- Soft ambient background, no strong color wash ---- */
+  .aurora{
+    position:fixed; inset:0; z-index:-1; overflow:hidden;
+    background:linear-gradient(160deg,#f7f6fb 0%,#f3f2f8 50%,#f2f4f3 100%);
+  }
+  .blob{ position:absolute; border-radius:50%; filter:blur(110px); opacity:.28; }
+  .blob.b1{ width:520px;height:520px; top:-180px; left:-140px; background:#a9b8e8; }
+  .blob.b2{ width:480px;height:480px; top:40px; right:-180px; background:#dcb3c9; }
+  .blob.b3{ width:540px;height:540px; bottom:-240px; left:20%; background:#a9d6c9; }
+
+  .wrap{ max-width:1000px; margin:0 auto; padding:34px 24px 90px; }
+
+  /* ---- Hero ---- */
+  .hero{
+    background:linear-gradient(120deg,#3a3563 0%,#5b4270 60%,#6d4a63 100%);
+    border-radius:var(--radius-lg);
+    padding:34px 32px 28px;
+    position:relative;
+    overflow:hidden;
+    color:#fff;
+    box-shadow:0 18px 44px rgba(58,53,99,.22);
+  }
+  .hero::after{
+    content:"";
+    position:absolute; inset:0;
+    background:radial-gradient(circle at 88% -10%,rgba(255,255,255,.14),transparent 55%);
+    pointer-events:none;
+  }
+  .badge{
+    display:inline-flex; align-items:center; gap:7px;
+    background:rgba(255,255,255,.14);
+    color:#fff; font-size:12.5px; font-weight:600;
+    padding:7px 13px 7px 11px; border-radius:99px; margin-bottom:16px;
+    border:1px solid rgba(255,255,255,.22);
+  }
+  .badge .dot{ width:6px;height:6px;border-radius:50%; background:#e3b873; box-shadow:0 0 0 4px rgba(227,184,115,.22); }
+  h1{ font-size:clamp(24px,3.4vw,32px); margin:0 0 8px; font-weight:800; letter-spacing:-0.01em; }
+  .exam-line{ color:rgba(255,255,255,.82); font-size:14.5px; margin:0 0 24px; }
+  .exam-line b{ font-weight:700; color:#fff; }
+
+  .progress-card{
+    background:rgba(255,255,255,.95);
+    color:var(--ink);
+    border-radius:var(--radius-md);
+    padding:22px 24px;
+    box-shadow:0 8px 24px rgba(40,30,70,.10);
+  }
+  .progress-top{ display:flex; align-items:flex-end; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
+  .progress-pct{
+    font-size:44px; font-weight:800; letter-spacing:-0.02em; line-height:1;
+    color:#4a3f73;
+  }
+  .progress-sub{ color:var(--muted); font-size:14px; padding-bottom:6px; font-weight:500; }
+  .bar-track{ height:12px; background:#ece9f5; border-radius:99px; overflow:hidden; }
+  .bar-fill{
+    height:100%;
+    background:linear-gradient(90deg,#786aa8,#a5729a);
+    border-radius:99px; width:0%;
+    transition:width .5s cubic-bezier(.4,0,.2,1);
+  }
+
+  .stat-row{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-top:20px; }
+  .stat-pill{ background:#f6f4fb; border:1px solid #ece7f5; border-radius:var(--radius-sm); padding:12px 8px; text-align:center; }
+  .stat-num{ font-weight:800; font-size:19px; color:var(--ink); }
+  .stat-label{ font-size:11.5px; color:var(--muted-soft); margin-top:2px; font-weight:500; }
+
+  .name-row{ margin:20px 4px 0; display:flex; align-items:center; gap:10px; font-size:14.5px; color:rgba(255,255,255,.85); font-weight:500; }
+  .name-row input{
+    border:none; border-bottom:1.5px solid rgba(255,255,255,.4);
+    background:transparent; font-family:inherit; font-size:14.5px;
+    padding:5px 2px; flex:1; max-width:240px; color:#fff;
+  }
+  .name-row input::placeholder{ color:rgba(255,255,255,.6); }
+  .name-row input:focus{ outline:none; border-bottom-color:#fff; }
+
+  /* ---- Subject cards ---- */
+  .subject-grid{ margin-top:22px; display:flex; flex-direction:column; gap:16px; }
+
+  section.subject{
+    background:var(--card-bg);
+    backdrop-filter:blur(16px) saturate(140%);
+    -webkit-backdrop-filter:blur(16px) saturate(140%);
+    border:1px solid var(--card-border);
+    border-radius:var(--radius-md);
+    box-shadow:var(--shadow-soft);
+    padding:20px 24px 8px;
+    position:relative;
+    overflow:hidden;
+    transition:box-shadow .25s ease;
+  }
+  section.subject::before{
+    content:""; position:absolute; left:0; top:0; bottom:0; width:4px;
+    background:var(--accent-grad);
+  }
+  section.subject:hover{ box-shadow:0 14px 32px rgba(50,45,90,.13); }
+
+  .subject-head{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:6px; margin-left:6px;}
+  .subject-title-row{ display:flex; align-items:center; gap:12px; }
+  .icon-badge{
+    width:36px;height:36px; border-radius:11px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:17px; flex:none;
+    background:var(--accent-grad);
+    opacity:.92;
+  }
+  .subject-head h2{ font-size:16.5px; margin:0; font-weight:700; color:var(--ink); letter-spacing:-0.005em; }
+  .subject-meta{ font-size:12.5px; color:var(--muted-soft); white-space:nowrap; display:flex; align-items:center; gap:6px; }
+  .subject-meta .sep{ color:rgba(107,103,133,.3); }
+  .subject-meta .subject-count{ font-weight:700; color:var(--ink); }
+  .pct-chip{
+    font-weight:700; font-size:11.5px; padding:4px 10px; border-radius:99px;
+    color:#4a3f5e; background:#ece7f5;
+  }
+
+  .mini-bar-track{ height:6px; background:rgba(107,103,133,.12); border-radius:99px; overflow:hidden; margin:14px 6px 16px; }
+  .mini-bar-fill{ height:100%; background:var(--accent-grad); width:0%; border-radius:99px; transition:width .4s cubic-bezier(.4,0,.2,1); }
+
+  .topic-grid{ display:grid; grid-template-columns:1fr 1fr; gap:0 26px; padding-left:6px; }
+
+  label.topic{
+    display:flex; align-items:flex-start; gap:11px;
+    padding:9px 4px; border-bottom:1px solid rgba(107,103,133,.10);
+    cursor:pointer; font-size:14.5px; user-select:none;
+  }
+  label.topic span{ transition:color .25s ease, opacity .25s ease; padding-top:1px; }
+  label.topic input{
+    appearance:none; -webkit-appearance:none;
+    width:19px; height:19px; flex:none; margin-top:1px;
+    border:1.8px solid rgba(107,103,133,.32);
+    border-radius:6px; position:relative; cursor:pointer;
+    background:rgba(255,255,255,.7);
+    transition:background .25s ease, border-color .25s ease, transform .15s ease;
+  }
+  label.topic input:active{ transform:scale(.88); }
+  label.topic input:checked{
+    background:var(--accent-grad);
+    border-color:transparent;
+  }
+  label.topic input:checked::after{
+    content:""; position:absolute; left:5.5px; top:2px;
+    width:5px; height:10px; border:solid #fff; border-width:0 2px 2px 0;
+    transform:rotate(45deg);
+  }
+  label.topic input:checked ~ span{
+    color:var(--muted-soft); text-decoration:line-through;
+    text-decoration-color:rgba(107,103,133,.3); opacity:.75;
+  }
+
+  footer{
+    max-width:1000px; margin:32px auto 0; padding:20px 24px 0;
+    display:flex; justify-content:space-between; align-items:center;
+    gap:14px; color:var(--muted-soft); font-size:12.5px; font-weight:500;
+  }
+  .reset-btn{
+    background:#fff; border:1.5px solid #ece7f5; color:var(--muted);
+    padding:9px 18px; border-radius:99px; font-size:13px; cursor:pointer;
+    font-family:inherit; font-weight:600; transition:.2s ease;
+    box-shadow:0 3px 10px rgba(50,45,90,.06);
+  }
+  .reset-btn:hover{ color:#a5486e; border-color:#f0d9e4; background:#fdf7fa; }
+
+  #confetti-canvas{ position:fixed; inset:0; pointer-events:none; z-index:50; }
+
+  ::selection{ background:rgba(90,75,140,.18); }
+</style>
+</head>
+<body>
+
+<div class="aurora">
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+</div>
+<canvas id="confetti-canvas"></canvas>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div class="badge"><span class="dot"></span>पूर्ण पाठ्यक्रम</div>
+    <h1>सुपरटेट सिलेबस प्रोग्रेस ट्रैकर</h1>
+    <p class="exam-line">
+      <b>उ.प्र. सहायक अध्यापक (कक्षा 1–5) भर्ती परीक्षा 2026 — SUPERTET</b><br>
+      120 प्रश्न · 120 मिनट · प्रत्येक प्रश्न 3 अंक · गलत उत्तर पर −1 अंक
+    </p>
+
+    <div class="progress-card">
+      <div class="progress-top">
+        <div>
+          <div class="progress-pct" id="overallPct">0%</div>
+          <div class="progress-sub" id="overallSub">0 / 108 टॉपिक्स पूर्ण</div>
+        </div>
+      </div>
+      <div class="bar-track"><div class="bar-fill" id="overallBar"></div></div>
+      <div class="stat-row">
+        <div class="stat-pill"><div class="stat-num">1</div><div class="stat-label">परीक्षा</div></div>
+        <div class="stat-pill"><div class="stat-num">10</div><div class="stat-label">विषय</div></div>
+        <div class="stat-pill"><div class="stat-num" id="topicStat">0 / 108</div><div class="stat-label">टॉपिक्स पूर्ण</div></div>
+      </div>
+    </div>
+
+    <div class="name-row">
+      नाम: <input type="text" id="userName" placeholder="अपना नाम लिखें">
+    </div>
+  </div>
+
+  <div class="subject-grid" id="subjects"></div>
+
+</div>
+
+<footer>
+  <span>कुल अंक: 120 · तैयार किया गया: 12 सितम्बर 2026</span>
+  <button class="reset-btn" id="resetBtn">प्रगति रीसेट करें</button>
+</footer>
+
+<script>
+const DATA = [
+  { title: "सामान्य ज्ञान / समसामयिक घटनाएँ", marks: 25, icon:"🌍", c1:"#c98d86", c2:"#d9ab8f",
+    topics: ["अंतर्राष्ट्रीय समसामयिक घटनाएँ","राष्ट्रीय समसामयिक घटनाएँ","प्रदेश (उ.प्र.) से सम्बन्धित घटनाएँ","महत्वपूर्ण स्थान","महत्वपूर्ण व्यक्तित्व","महत्वपूर्ण रचनाएँ","अन्तर्राष्ट्रीय एवं राष्ट्रीय पुरस्कार","खेल-कूद","भारतीय संस्कृति एवं कला"] },
+  { title: "तार्किक ज्ञान", marks: 5, icon:"🧩", c1:"#8b7fbf", c2:"#a99bd1",
+    topics: ["सादृश्यता (Analogies)","कथन एवं कारण","द्विआधारी तर्क (Binary Logic)","वर्गीकरण","घड़ी एवं कैलेंडर","कोडित असमानताएँ / कोडिंग-डिकोडिंग","विवेचनात्मक तर्कशक्ति","क्यूब्स एवं संख्या श्रृंखला","पहेलियाँ (Puzzles)","प्रतीक एवं संकेत","वेन आरेख एवं पासा","आंकड़ा निर्वचन (Data Interpretation)","दिशा ज्ञान परीक्षण","समूहीकरण एवं चयन","निष्कर्ष","अक्षर श्रृंखला"] },
+  { title: "हिन्दी, संस्कृत तथा अंग्रेजी", marks: 30, icon:"📚", c1:"#5c9e8a", c2:"#7fb69e",
+    topics: ["हिन्दी व्याकरण","हिन्दी अपठित गद्यांश","हिन्दी/संस्कृत पद्यांश","संस्कृत व्याकरण","संस्कृत अपठित गद्यांश","अंग्रेजी व्याकरण (Grammar)","अंग्रेजी बोधगम्यता (Comprehension)","अंग्रेजी अपठित गद्यांश"] },
+  { title: "विज्ञान", marks: 8, icon:"🔬", c1:"#6e93bd", c2:"#8fadd1",
+    topics: ["दैनिक जीवन में विज्ञान","गति","बल","ऊर्जा","दूरी","प्रकाश","ध्वनि","जीवों की दुनिया","मानव शरीर एवं स्वास्थ्य","स्वच्छता एवं पोषण","पर्यावरण एवं प्राकृतिक संसाधन","पदार्थ एवं पदार्थ की अवस्थाएँ"] },
+  { title: "गणित", marks: 16, icon:"➗", c1:"#c39355", c2:"#d3ab73",
+    topics: ["अंकीय क्षमता","गणितीय संक्रियाएँ","दशमलव","स्थानीयमान","भिन्न","व्याज","लाभ-हानि","प्रतिशत","विभाज्यता","गुणनखण्ड","ऐकिक नियम","सामान्य बीजगणित","क्षेत्रफल","औसत","आयतन","अनुपात","सर्वसमिकाएँ","सामान्य ज्यामिति","सामान्य सांख्यिकी"] },
+  { title: "पर्यावरण एवं सामाजिक अध्ययन", marks: 8, icon:"🌱", c1:"#4f9d94", c2:"#78b8ae",
+    topics: ["पृथ्वी की संरचना","नदियाँ","पर्वत","महाद्वीप","महासागर व जीव","प्राकृतिक सम्पदा","अक्षांश और देशान्तर","सौरमण्डल","भारतीय भूगोल","भारतीय स्वतंत्रता संग्राम","भारतीय समाज सुधारक","भारतीय संविधान","हमारी शासन व्यवस्था","यातायात एवं सड़क सुरक्षा","भारतीय अर्थव्यवस्था एवं चुनौतियाँ","हमारी सांस्कृतिक विरासत","पर्यावरण संरक्षण","प्राकृतिक आपदा प्रबंधन"] },
+  { title: "शिक्षण कौशल", marks: 8, icon:"🎓", c1:"#b06b8a", c2:"#c98fa8",
+    topics: ["शिक्षण की विधियाँ एवं कौशल","शिक्षण अधिगम के सिद्धान्त","वर्तमान भारतीय समाज एवं प्रारम्भिक शिक्षा","समावेशी शिक्षा","प्रारम्भिक शिक्षा के नवीन प्रयास","शैक्षिक मूल्यांकन एवं मापन","आरम्भिक पठन कौशल","शैक्षिक प्रबन्धन एवं प्रशासन"] },
+  { title: "बाल मनोविज्ञान", marks: 8, icon:"🧠", c1:"#7c72b0", c2:"#9c94c9",
+    topics: ["वैयक्तिक भिन्नता","बाल विकास को प्रभावित करने वाले कारक","सीखने की आवश्यकता की पहचान","पढ़ने के लिए वातावरण का सृजन","सीखने के सिद्धान्त एवं कक्षा-शिक्षण में उपयोगिता","दिव्यांग छात्रों हेतु विशेष व्यवस्था"] },
+  { title: "सूचना तकनीकी", marks: 4, icon:"💻", c1:"#5f8fac", c2:"#82abc4",
+    topics: ["शिक्षण कौशल विकास में सूचना तकनीकी","कम्प्यूटर","इन्टरनेट","स्मार्टफोन","ओ०ई०आर० (ओपन एजुकेशनल रिसोर्स)","शिक्षण में उपयोगी ऐप्स","डिजिटल शिक्षण सामग्री"] },
+  { title: "जीवन कौशल / प्रबंधन एवं अभिवृत्ति", marks: 8, icon:"⚖️", c1:"#b8748f", c2:"#cd93a9",
+    topics: ["व्यावसायिक आचरण एवं नीति","प्रेरणा","शिक्षक की भूमिका (सुविधा प्रदाता, अनुश्रवणकर्ता, नेतृत्वकर्ता, मार्गदर्शक, परामर्शदाता)","संवैधानिक और मानवीय मूल्य","दण्ड एवं पुरस्कार व्यवस्था का प्रभावी प्रयोग"] }
+];
+
+const STORAGE_KEY = "supertet_tracker_progress_v1";
+const NAME_KEY = "supertet_tracker_name_v1";
+
+function loadState(){
+  try{ const raw = localStorage.getItem(STORAGE_KEY); return raw ? JSON.parse(raw) : {}; }
+  catch(e){ return {}; }
+}
+function saveState(state){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){} }
+
+let state = loadState();
+let celebrated = false;
+
+const subjectsEl = document.getElementById('subjects');
+const totalTopics = DATA.reduce((a,s)=>a+s.topics.length,0);
+
+DATA.forEach((subject, sIdx) => {
+  const section = document.createElement('section');
+  section.className = 'subject';
+  section.style.setProperty('--accent-grad', `linear-gradient(135deg, ${subject.c1}, ${subject.c2})`);
+
+  const head = document.createElement('div');
+  head.className = 'subject-head';
+  head.innerHTML = `
+    <div class="subject-title-row">
+      <div class="icon-badge">${subject.icon}</div>
+      <h2>${subject.title}</h2>
+    </div>
+    <div class="subject-meta">
+      <span class="subject-count" data-role="count">0/${subject.topics.length}</span> टॉपिक्स
+      <span class="sep">·</span>${subject.marks} अंक
+      <span class="pct-chip" data-role="pct">0%</span>
+    </div>`;
+  section.appendChild(head);
+
+  const miniTrack = document.createElement('div');
+  miniTrack.className = 'mini-bar-track';
+  const miniFill = document.createElement('div');
+  miniFill.className = 'mini-bar-fill';
+  miniTrack.appendChild(miniFill);
+  section.appendChild(miniTrack);
+
+  const grid = document.createElement('div');
+  grid.className = 'topic-grid';
+
+  subject.topics.forEach((topic, tIdx) => {
+    const id = `s${sIdx}-t${tIdx}`;
+    const label = document.createElement('label');
+    label.className = 'topic';
+    label.innerHTML = `<input type="checkbox" data-id="${id}"><span>${topic}</span>`;
+    grid.appendChild(label);
+  });
+
+  section.appendChild(grid);
+  subjectsEl.appendChild(section);
+
+  section._miniFill = miniFill;
+  section._countEl = head.querySelector('[data-role="count"]');
+  section._pctEl = head.querySelector('[data-role="pct"]');
+  section._total = subject.topics.length;
+});
+
+function applyState(){
+  document.querySelectorAll('input[type="checkbox"][data-id]').forEach(cb=>{
+    cb.checked = !!state[cb.dataset.id];
+  });
+  recompute(false);
+}
+
+function recompute(animateCelebrate){
+  let overallDone = 0;
+  document.querySelectorAll('section.subject').forEach(section=>{
+    const boxes = section.querySelectorAll('input[type="checkbox"]');
+    let done = 0;
+    boxes.forEach(b=>{ if(b.checked) done++; });
+    overallDone += done;
+    const pct = Math.round((done/section._total)*100);
+    section._miniFill.style.width = pct+'%';
+    section._countEl.textContent = `${done}/${section._total}`;
+    section._pctEl.textContent = pct+'%';
+  });
+  const overallPct = Math.round((overallDone/totalTopics)*100);
+  document.getElementById('overallPct').textContent = overallPct+'%';
+  document.getElementById('overallSub').textContent = `${overallDone} / ${totalTopics} टॉपिक्स पूर्ण`;
+  document.getElementById('overallBar').style.width = overallPct+'%';
+  document.getElementById('topicStat').textContent = `${overallDone} / ${totalTopics}`;
+
+  if(animateCelebrate && overallPct === 100 && !celebrated){
+    celebrated = true;
+    launchConfetti();
+  }
+  if(overallPct < 100){ celebrated = false; }
+}
+
+subjectsEl.addEventListener('change', (e)=>{
+  if(e.target.matches('input[type="checkbox"][data-id]')){
+    state[e.target.dataset.id] = e.target.checked;
+    saveState(state);
+    recompute(true);
+  }
+});
+
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  if(confirm('क्या आप वाकई अपनी पूरी प्रगति रीसेट करना चाहते हैं?')){
+    state = {};
+    saveState(state);
+    celebrated = false;
+    applyState();
+  }
+});
+
+const nameInput = document.getElementById('userName');
+nameInput.value = localStorage.getItem(NAME_KEY) || '';
+nameInput.addEventListener('input', ()=>{ localStorage.setItem(NAME_KEY, nameInput.value); });
+
+applyState();
+
+/* ---- lightweight confetti burst, muted palette ---- */
+function launchConfetti(){
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const colors = ['#8b7fbf','#c98d86','#5c9e8a','#6e93bd','#c39355'];
+  const pieces = Array.from({length:110}, () => ({
+    x: Math.random()*canvas.width,
+    y: -20 - Math.random()*canvas.height*0.3,
+    r: 4 + Math.random()*4,
+    color: colors[Math.floor(Math.random()*colors.length)],
+    vx: -2 + Math.random()*4,
+    vy: 2 + Math.random()*3,
+    rot: Math.random()*360,
+    vrot: -6 + Math.random()*12
+  }));
+  let frame = 0;
+  function tick(){
+    frame++;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pieces.forEach(p=>{
+      p.x += p.vx; p.y += p.vy; p.rot += p.vrot;
+      ctx.save();
+      ctx.translate(p.x,p.y);
+      ctx.rotate(p.rot*Math.PI/180);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r*0.6);
+      ctx.restore();
+    });
+    if(frame < 140){ requestAnimationFrame(tick); }
+    else{ ctx.clearRect(0,0,canvas.width,canvas.height); }
+  }
+  tick();
+}
+window.addEventListener('resize', ()=>{
+  const canvas = document.getElementById('confetti-canvas');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+</script>
+
+</body>
+</html>
